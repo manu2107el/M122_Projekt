@@ -1,0 +1,3 @@
+Als Verantwotlicher für den file server möchte ich, dass Regelmässige backups erstellt werden, welche um platz zu sparen nur geänderte dateien speichert.
+Gründ dafür sind die ereignisse der letzten zeit, in der es immer wider vorkam, dass dateien felerhaft sind.
+Die backups sollten immer mit dem aktuellen datum, also einem zeitstämpel beschriftet sein
