@@ -14,9 +14,9 @@ function Get-FilesToBackup {
     $Source = $Source.ToLower().TrimEnd('\')
     $BackupDirectory = $BackupDirectory.ToLower().TrimEnd('\')
 
-    # Check if source directory exists
+    # Überprüfen ob quellverzeichniss existiert
     if (-not (Test-Path -Path $Source)) {
-        Write-Host "Source directory does not exist."
+        Write-Host "Quellverzeichniss konnte nicht gefunden werden."
         return
     }
 
@@ -57,29 +57,29 @@ function Perform-Backup {
     $FilesToCopy = $BackupData.FilesToCopy
     $BackupFilePath = $BackupData.BackupFilePath
 
-    # Create a temporary backup directory
-    $TempBackupDir = Join-Path -Path $BackupDirectory -ChildPath "temp_backup"
+    # Temporäres Verzeichniss erstellen.
+    $TempBackupDir = Join-Path -Path $BackupDirectory -ChildPath "Backup"
     if (Test-Path -Path $TempBackupDir) {
         Remove-Item -Path $TempBackupDir -Recurse -Force
     }
     New-Item -Path $TempBackupDir -ItemType Directory | Out-Null
 
-    # Copy the files to the temporary backup directory
+    # Dateien ins temporäre verzeichniss kopieren
     foreach ($File in $FilesToCopy) {
         $RelativePath = $File.FullName.Substring($Source.Length)
         $DstFile = Join-Path -Path $TempBackupDir -ChildPath $RelativePath
 
-        # Ensure the destination directory exists
+        # Sichergehen, dass das ziel verzeichniss existiert
         $DstDir = Split-Path -Path $DstFile
         if (-not (Test-Path -Path $DstDir)) {
             New-Item -Path $DstDir -ItemType Directory | Out-Null
         }
 
-        # Copy the file to the destination
+        # Dateien Kopieren
         Copy-Item -Path $File.FullName -Destination $DstFile
     }
 
-    # Compress backup files
+    # Zipen
     Compress-Archive -Path $TempBackupDir -DestinationPath $BackupFilePath -Update
 
     Remove-Item -Path $TempBackupDir -Recurse -Force
